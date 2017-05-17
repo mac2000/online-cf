@@ -4,14 +4,14 @@ import redis
 import re
 import time
 
-r2 = redis.StrictRedis(host='localhost', port=6380, db=0)
-r3 = redis.StrictRedis(host='localhost', port=6381, db=0)
+r2 = redis.StrictRedis(host='r2', port=6379, db=0)
+r3 = redis.StrictRedis(host='r3', port=6379, db=0)
 
 while True:
     if r3.llen('qii') != 0:
         pair = r3.blpop('qii')[1].decode("utf-8")
         pairReg = re.match(r'(.*):(.*)', pair, re.M|re.I)
-        
+
         item1 = pairReg.group(1)
         item2 = pairReg.group(2)
 
@@ -19,7 +19,7 @@ while True:
         keys2 = r2.hkeys(item2)
 
         interCount = 0
-        unionCount = 0        
+        unionCount = 0
         for key in keys1:
             if r2.hexists(item2, key):
                 interCount += 1

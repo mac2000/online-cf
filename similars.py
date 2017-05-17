@@ -9,7 +9,7 @@ if len(sys.argv) == 2:
 
 print('Showing the most similar items for', item)
 
-r3 = redis.StrictRedis(host='localhost', port=6381, db=0)
+r3 = redis.StrictRedis(host='r3', port=6379, db=0)
 
 while True:
     similars = r3.zrange(item, 0, -1, desc=False, withscores=True)

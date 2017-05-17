@@ -2,13 +2,13 @@
 import csv
 import socket
 
-with open('../data/test.csv') as csvread:
+with open('/code/data/new.csv') as csvread:
     for row in csv.DictReader(csvread):
         requeststr = 'HTTP GET /item/:'+row['movieId']+'/user/:'+row['userId']+'/rat/:'+row['rating']
         print ('requesting ' + requeststr)
 
         s = socket.socket()
-        s.connect(('localhost', 8080))
+        s.connect(('s1', 8080))
         s.send(bytearray(requeststr,'UTF-8'))
         s.close
 

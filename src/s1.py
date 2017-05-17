@@ -3,9 +3,9 @@ import redis
 import socket
 import re
 
-r1 = redis.StrictRedis(host='localhost', port=6379, db=0)
+r1 = redis.StrictRedis(host='r1', port=6379, db=0)
 s = socket.socket()
-s.bind(('localhost', 8080))
+s.bind(('0.0.0.0', 8080))
 s.listen(5)
 print('Can receive actions.')
 
@@ -18,5 +18,5 @@ while True:
     action = item + ':' + user + ':' + rating  # item:user:rating
     print('User', user, 'rated item', item, rating)
 
-    r1.lpush('qiu', action) 
+    r1.lpush('qiu', action)
     conn.close()
