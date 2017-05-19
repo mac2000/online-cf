@@ -56,5 +56,15 @@ services:
     image: "redis:alpine"
   r3:
     image: "redis:alpine"
+    ports:
+      - "6379:6379"
   r4:
     image: "redis:alpine"
+  web:
+    build: ./web
+    depends_on:
+      - r3
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/code

@@ -3,9 +3,9 @@ import redis
 import sys
 import time
 
-item = 1;
+item = 6509464
 if len(sys.argv) == 2:
-    item = sys.argv[1];
+    item = sys.argv[1]
 
 print('Showing the most similar items for', item)
 

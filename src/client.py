@@ -2,7 +2,7 @@
 import csv
 import socket
 
-with open('/code/data/new.csv') as csvread:
+with open('/code/data/merged.csv') as csvread:
     for row in csv.DictReader(csvread):
         requeststr = 'HTTP GET /item/:'+row['movieId']+'/user/:'+row['userId']+'/rat/:'+row['rating']
         print ('requesting ' + requeststr)

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>demo</title>
+	<style>
+		td[data-bind="text: item"] {
+			color: #999;
+		}
+	</style>
+</head>
+
+<body>
+	<form data-bind="submit: submit">
+		<fieldset>
+			<legend>search</legend>
+			<input type="search" placeholder="keyword..." data-bind="value: q">
+		</fieldset>
+	</form>
+	<div data-bind="if: input">
+		<fieldset>
+			<legend>input</legend>
+			<table data-bind="with: input">
+				<tr>
+					<td data-bind="text: item"></td>
+					<td data-bind="text: vacancy"></td>
+				</tr>
+			</table>
+		</fieldset>
+		<div data-bind="ifnot: hasOutput">
+			<fieldset>
+				<legend>output</legend>
+				<div style="color:#999">nothing here in current dataset</div>
+			</fieldset>
+		</div>
+	</div>
+	<div data-bind="if: hasOutput">
+		<fieldset>
+			<legend>output</legend>
+			<table>
+				<tbody data-bind="foreach: output">
+					<tr>
+						<td data-bind="text: item"></td>
+						<td data-bind="text: vacancy"></td>
+						<td data-bind="text: score"></td>
+					</tr>
+				</tbody>
+			</table>
+		</fieldset>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+	<script>
+		function Model() {
+			const model = this
+
+			model.q = ko.observable()
+
+			model.input = ko.observable()
+			model.output = ko.observableArray([])
+			model.hasOutput = ko.computed(function () {
+				return !!model.output().length
+			})
+
+			model.submit = function () {
+				fetch(`/sim/${model.q().trim().toLowerCase()}`)
+					.then(r => r.json()).then(({ input, output }) => {
+						model.input(input)
+						model.output(output)
+					})
+			}
+		}
+
+		let model = new Model()
+		ko.applyBindings(model)
+	</script>
+</body>
+
+</html>
