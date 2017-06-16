@@ -3,8 +3,10 @@ from __future__ import division # for float point division
 import redis
 import re
 import time
+import os
 
-r2 = redis.StrictRedis(host='localhost', port=6379, db=0)
+rh = os.environ.get('redis') if os.environ.get('redis') else 'localhost'
+r2 = redis.StrictRedis(host=rh, port=6379, db=0)
 
 while True:
     if r2.llen('qii') != 0:

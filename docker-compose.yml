@@ -1,69 +1,33 @@
 version: '3'
 
 services:
-  s1:
-    build: .
-    depends_on:
-      - r1
-    ports:
-      - "8080:8080"
-    volumes:
-      - .:/code
-    command: /usr/local/bin/python /code/src/s1.py
   s2:
     build: .
     depends_on:
-      - s1
-      - r1
-      - r2
-      - r3
-      - r4
+      - redis
+    environment:
+      - redis=redis
     volumes:
       - .:/code
     command: /usr/local/bin/python /code/src/s2.py
   s3:
     build: .
     depends_on:
-      - s1
       - s2
-      - r2
-      - r3
+      - redis
+    environment:
+      - redis=redis
     volumes:
       - .:/code
     command: /usr/local/bin/python /code/src/s3.py
-  client:
-    build: .
-    depends_on:
-      - s1
-      - s2
-      - s3
-    volumes:
-      - .:/code
-    command: /usr/local/bin/python /code/src/client.py
-  similars:
-    build: .
-    depends_on:
-      - s1
-      - s2
-      - s3
-      - r3
-    volumes:
-      - .:/code
-    command: python /code/similars.py
-  r1:
-    image: "redis:alpine"
-  r2:
-    image: "redis:alpine"
-  r3:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
-  r4:
+  redis:
     image: "redis:alpine"
   web:
     build: ./web
     depends_on:
-      - r3
+      - redis
+    environment:
+      - redis=redis
     ports:
       - "3000:3000"
     volumes:

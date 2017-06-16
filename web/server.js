@@ -1,40 +1,70 @@
 const express = require('express')
-const fs = require('fs')
-const parse = require('csv-parse/lib/sync')
 const redis = require('redis')
 
-const client = redis.createClient({ host: 'r3' })
+const client = redis.createClient({ host: process.env.redis || 'localhost' })
 
 client.on('error', console.log)
-
-const rows = parse(fs.readFileSync('vacancies.csv', 'utf-8'), { columns: true }).map(r => {
-	r.vacancy = r.vacancy.trim().toLowerCase()
-	return r
-})
 
 const app = express()
 
 app.use(express.static('.'))
 
-app.get('/sim/:name', (req, res) => {
-	const name = req.params.name.toLowerCase()
-	const items = rows.filter(row => row.vacancy.indexOf(name) !== -1)
-	const input = items[Math.floor(Math.random() * items.length)]
+app.get('/item/:item/user/:user/rating/:rating', (req, res) => {
+	let {item, user, rating} = req.params
+	item = parseInt(item)
+	user = parseInt(user)
+	rating = parseInt(rating)
 
-	client.zrange(input.item, 0, -1, 'withscores', (err, data) => {
+	if (isNaN(item) || isNaN(user) || isNaN(rating)) {
+		return res.sendStatus(400)
+	}
+
+	client.lpush('qiu', `${item}:${user}:${rating}`, err => {
+		return res.status(err ? 400 : 200).json(err ? err : 'OK')
+	})
+})
+
+app.get('/item/:item/related', (req, res) => {
+	let {item} = req.params
+	item = parseInt(item)
+
+	if (isNaN(item)) {
+		return res.sendStatus(400)
+	}
+
+	client.zrange('s' + item, 0, -1, 'withscores', (err, data) => {
 		let output = []
+
 		for (let i = 0; i < data.length; i += 2) {
 			const item = data[i]
 			const score = Math.round((-1 * data[i + 1]) * 100) / 100
 			output.push({ item, score })
 		}
-		output = output.map(o => {
-			o.vacancy = (rows.filter(r => r.item == o.item).shift() || { vacancy: '' }).vacancy
-			return o
-		})
 
-		res.json({ input, output })
+		res.json(output)
 	})
+})
+
+app.get('/item/:item', (req, res) => {
+	let {item} = req.params
+	item = parseInt(item)
+
+	if (isNaN(item)) {
+		return res.sendStatus(400)
+	}
+
+	client.hkeys('i' + item, (err, data) => res.status(err ? 500: 200).json(err ? err : data))
+})
+
+app.get('/user/:user', (req, res) => {
+	let {user} = req.params
+	user = parseInt(user)
+
+	if (isNaN(user)) {
+		return res.sendStatus(400)
+	}
+
+	client.smembers('u' + user, (err, data) => res.status(err ? 500: 200).json(err ? err : data))
 })
 
 app.listen(process.env.PORT || 3000)
