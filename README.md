@@ -72,3 +72,6 @@ docker run -it --rm onlinecf_s1 sh
 
 docker exec -it onlinecf_similars_1 sh
 
+### Single redis node
+
+docker run -it --rm --name redis -p 6379:6379 redis:alpine
