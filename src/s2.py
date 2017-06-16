@@ -3,10 +3,7 @@ import redis
 import re
 import time
 
-r1 = redis.StrictRedis(host='r1', port=6379, db=0)
-r2 = redis.StrictRedis(host='r2', port=6379, db=0)
-r3 = redis.StrictRedis(host='r3', port=6379, db=0)
-r4 = redis.StrictRedis(host='r4', port=6379, db=0)
+r1 = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 while True:
     #There must be a list named 'qiu' in r1 first
@@ -24,18 +21,18 @@ while True:
         rating = pairReg.group(3)
 
         # Add the user to item's set in r2
-        r2.hset(item, user, rating)
+        r1.hset('i' + item, user, rating)
 
         # Add the item to user's set in r4
-        r4.sadd(user, item)
+        r1.sadd('u' + user, item)
 
         # Put all item:alsowatcheditem pairs to qii
-        commonItems = r4.smembers(user)
+        commonItems = r1.smembers('u' + user)
         while len(commonItems) != 0:
             commonItem = commonItems.pop().decode("utf-8")
-            if commonItem != item:
+            if commonItem != 'i' + item:
                 itemPair = item + ':' + commonItem
                 print('Calculate the similarity of', item, commonItem, 'pair')
-                r3.lpush('qii', itemPair)
+                r1.lpush('qii', itemPair)
     else:
         time.sleep(1)

@@ -3,7 +3,7 @@ import redis
 import socket
 import re
 
-r1 = redis.StrictRedis(host='r1', port=6379, db=0)
+r1 = redis.StrictRedis(host='localhost', port=6379, db=0)
 s = socket.socket()
 s.bind(('0.0.0.0', 8080))
 s.listen(5)
