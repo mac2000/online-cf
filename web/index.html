@@ -8,5 +8,31 @@
 <body>
 <h1>Related</h1>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+<script>
+	function Model() {
+		let model = this
+
+		model.users = ko.observableArray()
+		model.items = ko.observableArray()
+
+		model.usersCount = ko.computed(() => model.users().length)
+		model.itemsCount = ko.computed(() => model.items().length)
+
+		model.loadUsers = () => jQuery.getJSON('/user').then(users => model.users(users))
+		model.loadItems = () => jQuery.getJSON('/item').then(items => model.items(items))
+
+		model.init = () => {
+			model.loadUsers()
+			model.loadItems()
+		}
+
+		model.init()
+	}
+
+	let model = new Model()
+	ko.applyBindings(model)
+</script>
 </body>
 </html>
