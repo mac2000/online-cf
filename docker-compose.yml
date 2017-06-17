@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 
 services:
   s2:
@@ -23,7 +23,7 @@ services:
   redis:
     image: "redis:alpine"
   web:
-    build: ./web
+    build: web
     depends_on:
       - redis
     environment:

@@ -75,3 +75,5 @@ docker exec -it onlinecf_similars_1 sh
 ### Single redis node
 
 docker run -it --rm --name redis -p 6379:6379 redis:alpine
+
+In production volumes should be removed from compose file, otherwise it wont start
