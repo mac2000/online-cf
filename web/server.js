@@ -1,5 +1,6 @@
 const express = require('express')
 const redis = require('redis')
+const cors = require('cors')
 
 const client = redis.createClient({ host: process.env.redis || 'localhost' })
 
@@ -7,6 +8,7 @@ client.on('error', console.log)
 
 const app = express()
 
+app.use(cors())
 app.use(express.static('.'))
 
 app.get('/item/:item/user/:user/rating/:rating', (req, res) => {
