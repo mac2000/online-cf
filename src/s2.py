@@ -32,7 +32,7 @@ while True:
         commonItems = r1.smembers('u' + user)
         while len(commonItems) != 0:
             commonItem = commonItems.pop().decode("utf-8")
-            if commonItem != 'i' + item:
+            if commonItem != item:
                 itemPair = item + ':' + commonItem
                 print('Calculate the similarity of', item, commonItem, 'pair')
                 r1.lpush('qii', itemPair)
