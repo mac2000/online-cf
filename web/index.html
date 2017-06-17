@@ -11,7 +11,7 @@
 	<tr>
 		<td valign="top">
 			<fieldset>
-				<legend>users (<span data-bind="text: itemsCount"></span> total)</legend>
+				<legend>users (<span data-bind="text: usersCount"></span> total)</legend>
 				<input type="search" data-bind="value: usersFilter, valueUpdate: 'input'" />
 				<div data-bind="foreach: filteredUsers">
 					<div>
@@ -32,7 +32,7 @@
 		</td>
 		<td valign="top">
 			<fieldset>
-				<legend>items (<span data-bind="text: usersCount"></span> total)</legend>
+				<legend>items (<span data-bind="text: itemsCount"></span> total)</legend>
 				<input type="search" data-bind="value: itemsFilter, valueUpdate: 'input'" />
 				<div data-bind="foreach: filteredItems">
 					<div>
