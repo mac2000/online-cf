@@ -11,26 +11,18 @@ app.use(express.static('.'))
 
 app.get('/item/:item/user/:user/rating/:rating', (req, res) => {
 	let {item, user, rating} = req.params
-	item = parseInt(item)
-	user = parseInt(user)
-	rating = parseInt(rating)
 
-	if (isNaN(item) || isNaN(user) || isNaN(rating)) {
+	if (!item || !user || isNaN(parseInt(rating))) {
 		return res.sendStatus(400)
 	}
 
-	client.lpush('qiu', `${item}:${user}:${rating}`, err => {
+	client.lpush('qiu', `${item}:${user}:${parseInt(rating)}`, err => {
 		return res.status(err ? 400 : 200).json(err ? err : 'OK')
 	})
 })
 
 app.get('/item/:item/related', (req, res) => {
 	let {item} = req.params
-	item = parseInt(item)
-
-	if (isNaN(item)) {
-		return res.sendStatus(400)
-	}
 
 	client.zrange('s' + item, 0, -1, 'withscores', (err, data) => {
 		let output = []
@@ -47,22 +39,12 @@ app.get('/item/:item/related', (req, res) => {
 
 app.get('/item/:item', (req, res) => {
 	let {item} = req.params
-	item = parseInt(item)
-
-	if (isNaN(item)) {
-		return res.sendStatus(400)
-	}
 
 	client.hkeys('i' + item, (err, data) => res.status(err ? 500: 200).json(err ? err : data))
 })
 
 app.get('/user/:user', (req, res) => {
 	let {user} = req.params
-	user = parseInt(user)
-
-	if (isNaN(user)) {
-		return res.sendStatus(400)
-	}
 
 	client.smembers('u' + user, (err, data) => res.status(err ? 500: 200).json(err ? err : data))
 })
