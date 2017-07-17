@@ -11,7 +11,7 @@ services:
       - redis=redis
     volumes:
       - ./back:/code
-    command: /usr/local/bin/python /code/src/worker1.py
+    command: /usr/local/bin/python /code/worker1.py
   worker2:
     build: back
     depends_on:
@@ -20,7 +20,7 @@ services:
       - redis=redis
     volumes:
       - ./back:/code
-    command: /usr/local/bin/python /code/src/worker2.py
+    command: /usr/local/bin/python /code/worker2.py
   web:
     build: front
     depends_on:
