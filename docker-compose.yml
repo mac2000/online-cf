@@ -1,27 +1,26 @@
 version: '2'
 
 services:
-  s2:
-    build: .
-    depends_on:
-      - redis
-    environment:
-      - redis=redis
-    volumes:
-      - .:/code
-    command: /usr/local/bin/python /code/src/s2.py
-  s3:
-    build: .
-    depends_on:
-      - s2
-      - redis
-    environment:
-      - redis=redis
-    volumes:
-      - .:/code
-    command: /usr/local/bin/python /code/src/s3.py
   redis:
     image: "redis:alpine"
+  worker1:
+    build: back
+    depends_on:
+      - redis
+    environment:
+      - redis=redis
+    volumes:
+      - ./back:/code
+    command: /usr/local/bin/python /code/src/worker1.py
+  worker2:
+    build: back
+    depends_on:
+      - redis
+    environment:
+      - redis=redis
+    volumes:
+      - ./back:/code
+    command: /usr/local/bin/python /code/src/worker2.py
   web:
     build: web
     depends_on:

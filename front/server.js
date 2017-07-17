@@ -39,28 +39,4 @@ app.get('/item/:item/related', (req, res) => {
 	})
 })
 
-app.get('/item/:item', (req, res) => {
-	let {item} = req.params
-
-	client.hkeys('i' + item, (err, data) => res.status(err ? 500: 200).json(err ? err : data))
-})
-
-app.get('/user/:user', (req, res) => {
-	let {user} = req.params
-
-	client.smembers('u' + user, (err, data) => res.status(err ? 500: 200).json(err ? err : data))
-})
-
-app.get('/item', (req, res) => {
-	client.keys('*', (err, data) => {
-		res.status(err ? 500: 200).json(err ? err : data.filter(i => i.indexOf('i') === 0).map(i => i.substring(1)))
-	})
-})
-
-app.get('/user', (req, res) => {
-	client.keys('*', (err, data) => {
-		res.status(err ? 500: 200).json(err ? err : data.filter(i => i.indexOf('u') === 0).map(i => i.substring(1)))
-	})
-})
-
 app.listen(process.env.PORT || 3000)
