@@ -22,7 +22,7 @@ services:
       - ./back:/code
     command: /usr/local/bin/python /code/src/worker2.py
   web:
-    build: web
+    build: front
     depends_on:
       - redis
     environment:
@@ -30,4 +30,4 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./web:/code
+      - ./front:/code
